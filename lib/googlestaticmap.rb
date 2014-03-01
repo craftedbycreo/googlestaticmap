@@ -267,7 +267,6 @@ end
 class MapPath
   # Thickness of the path line in pixels, defaults to 5
   attr_accessor :weight
-
   # Color of the path, either as a 24-bit (example: color=0xFFFFCC), a 32-bit
   # hexadecimal value (example: color=0xFFFFCCFF), or from the set
   # {black, brown, green, purple, yellow, blue, gray, orange, red, white}
@@ -278,7 +277,8 @@ class MapPath
 
   # MapPositions for each point on the line
   attr_accessor :points
-
+  # or an encoded polyline
+  attr_accessor :enc
   # Pass an optional hash of arguments
   def initialize(attrs={})
     @points = []
