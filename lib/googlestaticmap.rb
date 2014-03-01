@@ -287,7 +287,8 @@ class MapPath
 
   def to_s
     attrs = GoogleStaticMapHelpers.safe_instance_variables(self, ["points"])
-    raise Exception.new("Need more than one point for the path") unless !attrs["enc"].blank? || ( @points && @points.length > 1 )
+#need a better fix soon
+#    raise Exception.new("Need more than one point for the path") unless !attrs["enc"].blank? || ( @points && @points.length > 1 )
     s = attrs.to_a.collect do |k|
       # If the enc URL is URL encoded, it won't work
       val = (k[0] == "enc" ? k[1] : CGI.escape(k[1].to_s))
