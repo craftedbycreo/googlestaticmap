@@ -148,6 +148,7 @@ class GoogleStaticMap
                "proxy_address", "proxy_port"],
               :cgi_escape_values => true).to_a
     attrs << ["size", "#{@width}x#{@height}"] if @width && @height
+    attrs << ["visual_refresh","true"] # use newest visuals
     markers.each {|m| attrs << ["markers",m.to_s] }
     paths.each {|p| attrs << ["path",p.to_s] }
     attrs << ["center", center.to_s] if !center.nil?
@@ -285,10 +286,16 @@ class MapPath
   end
 
   def to_s
-    raise Exception.new("Need more than one point for the path") unless @points && @points.length > 1
     attrs = GoogleStaticMapHelpers.safe_instance_variables(self, ["points"])
-    s = attrs.to_a.collect {|k| "#{k[0]}:#{CGI.escape(k[1].to_s)}"}.join(MAP_SEPARATOR)
-    s << MAP_SEPARATOR << @points.join(MAP_SEPARATOR)
+    raise Exception.new("Need more than one point for the path") unless !attrs["enc"].blank? || ( @points && @points.length > 1 )
+    s = attrs.to_a.collect do |k|
+      # If the enc URL is URL encoded, it won't work
+      val = (k[0] == "enc" ? k[1] : CGI.escape(k[1].to_s))
+      "#{k[0]}:#{val}"
+    end.join(MAP_SEPARATOR)
+#    s = attrs.to_a.collect {|k| "#{k[0]}:#{CGI.escape(k[1].to_s)}"}.join(MAP_SEPARATOR)
+    s << MAP_SEPARATOR << @points.join(MAP_SEPARATOR) unless @points.join.blank?
+    s
   end
 end
 
